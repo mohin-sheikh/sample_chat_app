@@ -12,7 +12,7 @@ module.exports = {
       if (err || !db) {
         return callback(err);
       }
-      dbConnection = db.db('sample_airbnb');
+      dbConnection = db.db('sample_chat_app');
       console.log('Successfully connected to MongoDB.');
       return callback();
     });
