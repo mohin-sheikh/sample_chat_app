@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const dbo = require('../db/conn');
-const dbConnect = dbo.getDb();
+const { registerUserValidator } = require('../validator/user.validator')
 
 router.route('/listings').get(async function (_req, res) {
+  const dbConnect = dbo.getDb();
   dbConnect
     .collection('listingsAndReviews')
     .find({})
@@ -17,26 +18,41 @@ router.route('/listings').get(async function (_req, res) {
     });
 });
 
-router.route('/listings/recordSwipe').post(function (req, res) {
-  const matchDocument = {
-    listing_id: req.body.id,
-    last_modified: new Date(),
-    session_id: req.body.session_id,
-    direction: req.body.direction,
-  };
+router.route('/user/register').post(registerUserValidator, async function (req, res) {
+  const dbConnect = dbo.getDb();
+  const { country_code, phone_number, first_name, last_name } = req.body;
+
+  const user = await dbConnect
+    .collection('users')
+    .findOne({ phone_number: country_code + phone_number })
+
+  if (user) {
+    return res.status(400).json({ message: 'user is already exist' });
+  }
+
   dbConnect
-    .collection('matches')
-    .insertOne(matchDocument, function (err, result) {
+    .collection('users')
+    .insertOne({
+      first_name,
+      last_name,
+      phone_number: country_code + phone_number,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, function (err, result) {
       if (err) {
         res.status(400).send('Error inserting matches!');
       } else {
-        console.log(`Added a new match with id ${result.insertedId}`);
-        res.status(204).send();
+        res.status(201).send({
+          message: "User registered successfully.",
+          user_id: result.insertedId
+        }
+        );
       }
     });
 });
 
 router.route('/listings/updateLike').post(function (req, res) {
+  const dbConnect = dbo.getDb();
   const listingQuery = { _id: req.body.id };
   const updates = {
     $inc: {
@@ -58,6 +74,7 @@ router.route('/listings/updateLike').post(function (req, res) {
 });
 
 router.route('/listings/delete/:id').delete((req, res) => {
+  const dbConnect = dbo.getDb();
   const listingQuery = { listing_id: req.body.id };
 
   dbConnect
