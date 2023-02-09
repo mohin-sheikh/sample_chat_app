@@ -1,22 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const dbo = require('../db/conn');
-const { registerUserValidator } = require('../validator/user.validator')
-
-router.route('/listings').get(async function (_req, res) {
-  const dbConnect = dbo.getDb();
-  dbConnect
-    .collection('listingsAndReviews')
-    .find({})
-    .limit(50)
-    .toArray(function (err, result) {
-      if (err) {
-        res.status(400).send('Error fetching listings!');
-      } else {
-        res.json(result);
-      }
-    });
-});
+const { registerUserValidator } = require('../validator/user.validator');
+let { getJWTToken } = require("../security/jwt");
 
 router.route('/user/register').post(registerUserValidator, async function (req, res) {
   const dbConnect = dbo.getDb();
@@ -51,43 +37,33 @@ router.route('/user/register').post(registerUserValidator, async function (req, 
     });
 });
 
-router.route('/listings/updateLike').post(function (req, res) {
-  const dbConnect = dbo.getDb();
-  const listingQuery = { _id: req.body.id };
-  const updates = {
-    $inc: {
-      likes: 1,
-    },
-  };
+router.route('/user/login').post(async (req, res) => {
+  try {
+    const { country_code, phone_number } = req.body;
+    const dbConnect = dbo.getDb();
+    const user = await dbConnect
+      .collection('users')
+      .findOne({ phone_number: country_code + phone_number })
 
-  dbConnect
-    .collection('listingsAndReviews')
-    .updateOne(listingQuery, updates, function (err, _result) {
-      if (err) {
-        res
-          .status(400)
-          .send(`Error updating likes on listing with id ${listingQuery.id}!`);
-      } else {
-        console.log('1 document updated');
-      }
-    });
-});
+    if (!user) {
+      return res
+        .status(404)
+        .send({ error: 'User Not Found' });
+    }
 
-router.route('/listings/delete/:id').delete((req, res) => {
-  const dbConnect = dbo.getDb();
-  const listingQuery = { listing_id: req.body.id };
-
-  dbConnect
-    .collection('listingsAndReviews')
-    .deleteOne(listingQuery, function (err, _result) {
-      if (err) {
-        res
-          .status(400)
-          .send(`Error deleting listing with id ${listingQuery.listing_id}!`);
-      } else {
-        console.log('1 document deleted');
-      }
-    });
+    const generateToken = await getJWTToken({ user }); // Generating Token.
+    return res
+      .status(200)
+      .send({
+        status: 200,
+        message: "Success",
+        token: generateToken
+      });
+  } catch (error) {
+    return res
+      .status(400)
+      .send({ status: 400, error: error.message.toString() });
+  }
 });
 
 module.exports = router;
