@@ -6,11 +6,11 @@ let { getJWTToken } = require("../security/jwt");
 
 router.route('/user/register').post(registerUserValidator, async function (req, res) {
   const dbConnect = dbo.getDb();
-  const { country_code, phone_number, first_name, last_name } = req.body;
+  const { phone_number, first_name, last_name } = req.body;
 
   const user = await dbConnect
     .collection('users')
-    .findOne({ phone_number: country_code + phone_number })
+    .findOne({ phone_number: phone_number })
 
   if (user) {
     return res.status(400).json({ message: 'user is already exist' });
@@ -21,7 +21,7 @@ router.route('/user/register').post(registerUserValidator, async function (req, 
     .insertOne({
       first_name,
       last_name,
-      phone_number: country_code + phone_number,
+      phone_number: phone_number,
       createdAt: new Date(),
       updatedAt: new Date()
     }, function (err, result) {
@@ -39,11 +39,11 @@ router.route('/user/register').post(registerUserValidator, async function (req, 
 
 router.route('/user/login').post(async (req, res) => {
   try {
-    const { country_code, phone_number } = req.body;
+    const { phone_number } = req.body;
     const dbConnect = dbo.getDb();
     const user = await dbConnect
       .collection('users')
-      .findOne({ phone_number: country_code + phone_number })
+      .findOne({ phone_number: phone_number })
 
     if (!user) {
       return res

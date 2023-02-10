@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon app.js",
     "test": "mocha --timeout 11000 --exit",
-    "coverage": "npm run bat && nyc --reporter=html --reporter=text npm test",
+    "test:coverage": "nyc --reporter=html mocha",
     "lint": "eslint .",
     "format": "prettier --single-quote --check .",
     "prepare": "cd ../ && husky install server/.husky"
