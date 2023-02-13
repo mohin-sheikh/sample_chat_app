@@ -15,11 +15,6 @@ app.use(require('./routes/user'));
 app.use(require('./routes/message'));
 app.use(require('./routes/customer'));
 
-// Global error handling
-app.use(function (err, _req, res) {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
 
 // perform a database connection when the server starts
 dbo.connectToServer(function (err) {
