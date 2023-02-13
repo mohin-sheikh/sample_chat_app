@@ -14,7 +14,6 @@ app.use(express.json());
 app.use(require('./routes/user'));
 app.use(require('./routes/message'));
 app.use(require('./routes/customer'));
-// app.use(require('./routes/invoice'));
 
 // Global error handling
 app.use(function (err, _req, res) {
