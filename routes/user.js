@@ -4,6 +4,13 @@ const dbo = require('../db/conn');
 const { registerUserValidator } = require('../validator/user.validator');
 let { getJWTToken } = require("../security/jwt");
 
+
+router.route('/').post(async function (req, res) {
+  return res
+    .status(200)
+    .send({ message: 'Welcome to Chat Application' });
+});
+
 router.route('/user/register').post(registerUserValidator, async function (req, res) {
   const dbConnect = dbo.getDb();
   const { phone_number, first_name, last_name } = req.body;
