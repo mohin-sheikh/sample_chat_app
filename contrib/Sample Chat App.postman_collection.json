@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"first_name\": \"Mohin\",\r\n    \"last_name\": \"Sheikh\",\r\n    \"country_code\": \"+91\",\r\n    \"phone_number\": \"8830186746\"\r\n}",
+							"raw": "{\r\n    \"first_name\": \"Mohin\",\r\n    \"last_name\": \"Sheikh\",\r\n    \"phone_number\": \"8830186746\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -112,6 +112,87 @@
 							"path": [
 								"message",
 								"send"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CUSTOMER",
+			"item": [
+				{
+					"name": "Register Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Mohin\",\r\n    \"phone_number\": \"8830186746\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/customer/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customer",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "INVOIVE",
+			"item": [
+				{
+					"name": "Add Invoice",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer_id\": \"63e63af5a82b163a149a02e1\",\r\n    \"date\": \"2022-01-01\",\r\n    \"total\": 2000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/register/invoice",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"register",
+								"invoice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Invoice",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/invoices",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices"
 							]
 						}
 					},
