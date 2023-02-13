@@ -5,7 +5,7 @@ const { registerUserValidator } = require('../validator/user.validator');
 let { getJWTToken } = require("../security/jwt");
 
 
-router.route('/').post(async function (req, res) {
+router.route('/').get(async function (req, res) {
   return res
     .status(200)
     .send({ message: 'Welcome to Chat Application' });
